@@ -1,6 +1,6 @@
-dist/
-node_modules/
-.vscode/
-.idea/
+dist
+node_modules
+.vscode
+.idea
 *.tsbuildinfo
 *.log
