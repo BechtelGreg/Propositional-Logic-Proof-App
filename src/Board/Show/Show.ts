@@ -42,6 +42,9 @@ export const ShowBoard: Show<Board> = {
         lines => [lines, dashes(lines)] as const,
         flow(TUP.mapFst(ROA.reduce(S.Monoid.empty, S.Monoid.concat))),
         ([lines, dshs]) =>
-            `${dshs}\nProof Target: ${ShowProp(b.proofTarget)}\n${dshs}\n${lines}`
+`${dshs}
+        Proof Target: ${ShowProp(b.proofTarget)}
+${dshs}
+${lines}`
     )
 }

@@ -47,14 +47,14 @@ const rl = RL.createInterface({
 
 const handleInference
     = (b: Board): T.Task<Board> =>
-    pipe(() => rl.question("Enter inferences as `Proposition`, `Rule` n_0, n_1 ... n_k: \n"),
+    pipe(() => rl.question("Enter inferences as `Proposition`, `Rule` n_0, n_1 ... n_k: "),
         T.chain(flow(
             getDeduction(b),
             TE.chainEitherK(inference),
             TE.map(append),
             TE.flap(b),
             handleErrorMessage(IO.of(b))
-        )),
+        ))
     )
 
 
