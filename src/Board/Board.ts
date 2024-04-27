@@ -2,6 +2,9 @@ import {flow, identity, pipe} from "fp-ts/function";
 import * as ROA from 'fp-ts/ReadonlyArray'
 import * as E from 'fp-ts/Either'
 import * as TUP from 'fp-ts/ReadonlyTuple'
+import * as O from 'fp-ts/Option'
+import * as T from 'fp-ts/Task'
+import * as IO from 'fp-ts/IO'
 import {EquivalenceRules, Parameters, Params} from "../DeductionRules/rulesOfInference";
 import {Binary, Proposition, ShowProp} from "../Propositions/connectives";
 import {Board, Deduction, Deductions, Index, permuteDeduction, ProofLine} from "./Types";
@@ -56,7 +59,7 @@ const toLine: (v: ValidInferenceEvent) => ProofLine
             return toLineDiscr(v)
     }
 }
-const append = (line: ProofLine) => (b: Board): Board =>
+export const append = (line: ProofLine) => (b: Board): Board =>
     pipe([pipe(b.lines, ROA.append(line)), b.proofTarget], pairToBoard)
 
 
@@ -248,19 +251,19 @@ const evaluateDeduction: (d: Deductions) => E.Either<ErrorMessage, ProofLine>
     = flow(prepareParams, E.chain(validateParameter), E.map(toLine))
 
 
-const handleError = (e: ErrorMessage) => {
-    console.log(e)
-    return identity
+export const combineDeductionErrors = (errs: ReadonlyArray<ErrorMessage>): ErrorMessage => {
+    const tail = pipe(ROA.tail(errs), O.getOrElse((): ReadonlyArray<ErrorMessage> => []))
+    const head = pipe(ROA.head(errs), O.getOrElse(() => 'Uknown'));
+    return pipe(tail,
+        ROA.reduce(
+            head,
+            (errsStr, e) => `${errsStr} and ${e}`
+    ))
 }
 
-const handleErrors = (errs: ReadonlyArray<ErrorMessage>) => {
-    pipe(errs, ROA.map(console.log))
-    return identity
-}
-
-export const inference: (d: Deductions) => (b: Board) => Board = flow(
+export const inference: (d: Deductions) => E.Either<ErrorMessage, ProofLine> = flow(
     permuteDeduction,
     E.traverseArray(flow(evaluateDeduction, E.swap)),
     E.swap,
-    E.fold(handleErrors, append)
+    E.mapLeft(combineDeductionErrors)
 )

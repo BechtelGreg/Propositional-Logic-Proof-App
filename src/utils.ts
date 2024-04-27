@@ -14,7 +14,7 @@ export const applyTupC = <L, R, T>(f: (l: L) => (r: R) => T) => ([l, r]: [L, R] 
 
 
 export const pair: <A, B>(a: A) => (b: B) => [A, B] = a => b => [a, b]
-export const persistParam = <A, B>(f: (a: A) => B) => (a: A): [A, B] => [a, f(a)]
+export const persistParam = <A, B>(f: (a: A) => B) => (a: A): [B, A] => pair<B, A>(f(a))(a)
 export const persistLeft: <A, B, C>(f: (a: A) => E.Either<B, C>) => (a: A) => E.Either<[A, B], C>
     = f => a => pipe(f(a), E.mapLeft(pair(a)))
 export const persistRight: <A, B, C>(f: (a: A) => E.Either<B, C>) => (a: A) => E.Either<B, [A, C]>
