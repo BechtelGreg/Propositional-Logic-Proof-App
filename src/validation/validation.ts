@@ -57,6 +57,7 @@ import {
     UnaryOperation
 } from "../Propositions/Types";
 import {EquivalenceEvent, EquivalenceEvents} from "../DeductionRules/InferenceEvent/EquivelenceInferenceEvent";
+import {NewLine} from "../IoTasks/InputOutput";
 
 export type ValidInferenceEvent = {
     [Rule in DeductionRules]: ValidatedInferenceEvent<Rule>
@@ -571,7 +572,7 @@ const toRedEvent = (
                 ({tag: 'ToConjRedundancy', conclusion, _rule, lineNumbers, p}))
             )
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n'))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine))
     )
 }
 
@@ -613,7 +614,7 @@ const toMatImpEvent = (
                 }))
             )
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 }
 
 const toMatEqEvent = (
@@ -687,7 +688,7 @@ const toMatEqEvent = (
                 }))
             ),
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 }
 
 
@@ -732,7 +733,7 @@ const toExpEvent = (
                 }))
             ),
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 }
 
 const toDoubNegEvent = (
@@ -767,7 +768,7 @@ const toDoubNegEvent = (
                 }))
             ),
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 }
 
 const toDistEvent = (
@@ -847,7 +848,7 @@ const toDistEvent = (
                 }))
             )
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 }
 
 const toDemorgEvent = (
@@ -919,7 +920,7 @@ const toDemorgEvent = (
                 }))
             ),
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 }
 
 const toContraEvent = (
@@ -957,7 +958,7 @@ const toContraEvent = (
                 }))
             ),
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 }
 
 const toCommEvent = (
@@ -989,7 +990,7 @@ const toCommEvent = (
                 }))
             ),
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 
 const toAssocEvent = (
     {conclusion, _rule, lineNumbers}: EquivalenceParam<'Association'>
@@ -1068,7 +1069,7 @@ const toAssocEvent = (
                 }))
             ),
         ),
-        E.mapLeft(ROA.intercalate(S.Monoid)('\n')))
+        E.mapLeft(ROA.intercalate(S.Monoid)(NewLine)))
 }
 
 const toEquivalenceEvent = (params: EquivalenceParams): (p: Proposition) => E.Either<ErrorMessage, EquivalenceEvents> => {
@@ -1398,7 +1399,7 @@ export const validateParameter = (p: Parameters): E.Either<ErrorMessage, ValidIn
         case "Association":
             return pipe(p.ps,
                 traverseArrayLeft(validateEquivalenceParam(p)),
-                E.mapLeft(ROA.intercalate(S.Monoid)('\n'))
+                E.mapLeft(ROA.intercalate(S.Monoid)(NewLine))
             )
     }
 }

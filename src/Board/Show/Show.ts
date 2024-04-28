@@ -7,6 +7,7 @@ import {Board, Justifications, ProofLine, ProofLineFormater} from "../Types";
 import {max} from "fp-ts/Ord";
 import * as NUM from "fp-ts/number";
 import * as TUP from "fp-ts/ReadonlyTuple";
+import {NewLine} from "../../IoTasks/InputOutput";
 
 const JustificationOffset = 25
 export const ShowProofLine: Show<ProofLine> & ProofLineFormater = {
@@ -38,7 +39,7 @@ const dashes: (lines: ReadonlyArray<string>) => string = flow(
 export const ShowBoard: Show<Board> = {
     show: b => pipe(
         b.lines,
-        ROA.mapWithIndex((i, l) => `${i}. ${ShowProofLine.show(l)}\n`),
+        ROA.mapWithIndex((i, l) => `${i}. ${ShowProofLine.show(l)}${NewLine}`),
         lines => [lines, dashes(lines)] as const,
         flow(TUP.mapFst(ROA.reduce(S.Monoid.empty, S.Monoid.concat))),
         ([lines, dshs]) =>

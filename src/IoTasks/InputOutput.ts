@@ -9,6 +9,9 @@ import * as RL from "readline/promises";
 import * as PR from "../PrimitiveRefinements";
 import {ErrorMessage} from "../validation/errorstuff";
 
+export const NewLine = `
+`
+
 export const readFile = (path: string): TE.TaskEither<Error, Array<string>> =>
     pipe(TE.tryCatch(
             () => fs.readFile(path, "utf8"),
