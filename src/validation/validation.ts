@@ -57,7 +57,7 @@ import {
     UnaryOperation
 } from "../Propositions/Types";
 import {EquivalenceEvent, EquivalenceEvents} from "../DeductionRules/InferenceEvent/EquivelenceInferenceEvent";
-import {NewLine} from "../IoTasks/InputOutput";
+import {NewLine} from "../IoTasks/ConsoleIO";
 
 export type ValidInferenceEvent = {
     [Rule in DeductionRules]: ValidatedInferenceEvent<Rule>

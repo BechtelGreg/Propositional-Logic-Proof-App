@@ -7,7 +7,7 @@ import {Board, Justifications, ProofLine, ProofLineFormater} from "../Types";
 import {max} from "fp-ts/Ord";
 import * as NUM from "fp-ts/number";
 import * as TUP from "fp-ts/ReadonlyTuple";
-import {NewLine} from "../../IoTasks/InputOutput";
+import {NewLine} from "../../IoTasks/ConsoleIO";
 
 const JustificationOffset = 25
 export const ShowProofLine: Show<ProofLine> & ProofLineFormater = {

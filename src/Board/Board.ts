@@ -1,17 +1,18 @@
-import {flow, identity, pipe} from "fp-ts/function";
+import {flow, pipe} from "fp-ts/function";
 import * as ROA from 'fp-ts/ReadonlyArray'
 import * as E from 'fp-ts/Either'
 import * as TUP from 'fp-ts/ReadonlyTuple'
 import * as O from 'fp-ts/Option'
-import * as T from 'fp-ts/Task'
-import * as IO from 'fp-ts/IO'
-import {EquivalenceRules, Parameters, Params} from "../DeductionRules/rulesOfInference";
-import {Binary, Proposition, ShowProp} from "../Propositions/connectives";
+import {Parameters, Params} from "../DeductionRules/rulesOfInference";
+import {Proposition, ShowProp} from "../Propositions/connectives";
 import {Board, Deduction, Deductions, Index, permuteDeduction, ProofLine} from "./Types";
 import {ErrorMessage} from "../validation/errorstuff";
 import {validateParameter, ValidInferenceEvent} from "../validation/validation";
-import {isSingleton, isTriple, isTwople} from "./MappingRefinment/Refinments";
+import {checkNonEmptyArray, isSingleton, isTriple, isTwople} from "./MappingRefinment/Refinments";
 import * as PRef from "../Propositions/Refinments";
+import {ParserError} from "../Parsing/Types";
+import * as RNEA from "fp-ts/ReadonlyNonEmptyArray";
+import * as ROTUP from "fp-ts/ReadonlyTuple";
 
 export type EmptyArrayMessage = ReturnType<typeof emptyArrayMessage>
 
@@ -251,6 +252,8 @@ const evaluateDeduction: (d: Deductions) => E.Either<ErrorMessage, ProofLine>
     = flow(prepareParams, E.chain(validateParameter), E.map(toLine))
 
 
+
+
 export const combineDeductionErrors = (errs: ReadonlyArray<ErrorMessage>): ErrorMessage => {
     const tail = pipe(ROA.tail(errs), O.getOrElse((): ReadonlyArray<ErrorMessage> => []))
     const head = pipe(ROA.head(errs), O.getOrElse(() => 'Uknown'));
@@ -266,4 +269,16 @@ export const inference: (d: Deductions) => E.Either<ErrorMessage, ProofLine> = f
     E.traverseArray(flow(evaluateDeduction, E.swap)),
     E.swap,
     E.mapLeft(combineDeductionErrors)
+)
+
+export const componentsToBoard: (comps: readonly [ReadonlyArray<ProofLine>, Proposition]) => Board
+    = ([lines, proofTarget]) => ({lines, proofTarget});
+
+const propToPremiseLine = (p: Proposition) => [p, 'Premise'] as ProofLine
+
+export const toBoard: (props: ReadonlyArray<Proposition>) => E.Either<ErrorMessage | ParserError, Board> = flow(
+    checkNonEmptyArray,
+    E.map(RNEA.unappend),
+    E.map(ROTUP.mapFst(ROA.map(propToPremiseLine))),
+    E.map(componentsToBoard),
 )

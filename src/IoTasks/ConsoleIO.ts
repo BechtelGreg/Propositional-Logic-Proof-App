@@ -12,16 +12,6 @@ import {ErrorMessage} from "../validation/errorstuff";
 export const NewLine = `
 `
 
-export const readFile = (path: string): TE.TaskEither<Error, Array<string>> =>
-    pipe(TE.tryCatch(
-            () => fs.readFile(path, "utf8"),
-            E.toError
-        ),
-        TE.map(s => s.replace(/(\r\n|\n|\r)/gm, "")),
-        TE.map(s => s.split(','))
-    )
-
-
 export const printStr: (s: string) => IO.IO<void>
     = s => () => console.log(s)
 
@@ -37,8 +27,6 @@ export const printStrTsk: (s: string) => T.Task<void>
 export const printTsk: (s: string | object) => T.Task<void>
     = flow(print, T.fromIO)
 
-//export const readLine = (s: string): T.Task<string> => () => rl.question(s)
-export const getProblems = (problems: string) => readFile(problems)
 
 
 export const handleError: (e: ErrorMessage) =>  IO.IO<void> = print

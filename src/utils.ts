@@ -1,7 +1,13 @@
 import {flow, hole, pipe, apply} from "fp-ts/function";
 import * as E from 'fp-ts/Either'
+import * as TE from 'fp-ts/TaskEither'
 import * as ROA from 'fp-ts/ReadonlyArray'
 import * as RNEA from "fp-ts/ReadonlyNonEmptyArray";
+import * as T from "fp-ts/Task";
+
+declare const __brand: unique symbol
+type Brand<B> = { [__brand]: B }
+export type Branded<T, B> = T & Brand<B>
 
 export type Flatten<T> = T extends ReadonlyArray<infer U> ? Flatten<U> : T
 export const pairRO: <A>(a: A) => <B>(b: B) => readonly [A, B]
@@ -11,7 +17,6 @@ export const get = <T, K extends keyof T>(k: K) => (t: T): T[K] => t[k]
 
 export const applyTup = <L, R, T>(f: (l: L, r: R) => T) => ([l, r]: [L, R] | readonly [L, R]): T => f(l, r)
 export const applyTupC = <L, R, T>(f: (l: L) => (r: R) => T) => ([l, r]: [L, R] | readonly [L, R]): T => f(l)(r)
-
 
 export const pair: <A, B>(a: A) => (b: B) => [A, B] = a => b => [a, b]
 export const persistParam = <A, B>(f: (a: A) => B) => (a: A): [B, A] => pair<B, A>(f(a))(a)
@@ -44,7 +49,12 @@ export const oneOfEithers = <A, L, R>(
 export const traverseArrayLeft = <A, L, R>(
     ae: (a:A) => E.Either<L, R>
 ): (as: ReadonlyArray<A>) => E.Either<ReadonlyArray<L>, R> =>
-    as => pipe(as, ROA.map(flow(ae, E.swap)), E.sequenceArray, E.swap)
+    flow(ROA.map(flow(ae, E.swap)), E.sequenceArray, E.swap)
+
+export const traverseArrayTLeft = <A, L, R>(
+    ae: (a:A) => TE.TaskEither<L, R>
+): (as: ReadonlyArray<A>) => TE.TaskEither<ReadonlyArray<L>, R> =>
+    flow(ROA.map(flow(ae, TE.swap)), TE.sequenceArray, TE.swap)
 
 
 const spreadRNEA = <T>(insertElem: T) => (rts: ReadonlyArray<T>): RNEA.ReadonlyNonEmptyArray<RNEA.ReadonlyNonEmptyArray<T>> => {

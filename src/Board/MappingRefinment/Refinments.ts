@@ -92,7 +92,7 @@ const toDeduction: (b: Board) => (pd: Parser.ParsedDeduction) => E.Either<ErrorM
 )
 
 
-export const getDeduction
+export const stringToDeduction
     = (b: Board) => (s: string): TE.TaskEither<ErrorMessage, Deductions> => pipe(
     () => Parser.parseDeductionString(s),
     TE.fromIOEither,
