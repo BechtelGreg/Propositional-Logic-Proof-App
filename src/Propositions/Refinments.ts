@@ -1,32 +1,22 @@
 import * as RFN from "fp-ts/Refinement";
+import {Refinement} from "fp-ts/Refinement";
 import {flow, pipe} from "fp-ts/function";
-import {
-    Atomic,
-    Binary,
-    Compound,
-    Proposition,
-    Unary
-} from "./connectives"
-
-const decideBin = <OP extends BinOperation>(op: OP): Refinement<Binary, Binary & { operator: OP }> => {
-    return (b: Binary): b is Binary & { operator: OP } => b.operator == op
-}
-
+import {Atomic, Binary, Compound, Proposition, Unary} from "./connectives"
 import {
     BinaryOf,
     BinCompounds,
     BinOperation,
-    Conjunction, ConjunctionOf,
+    Conjunction,
     Disjunction,
-    DisjunctionOf,
     Equivalence,
     Implication,
     Negation
 } from "./Types";
-import {Refinement} from "fp-ts/Refinement";
-import {get} from "../utils";
-import * as ROA from "fp-ts/ReadonlyArray";
 import * as RTUP from "fp-ts/ReadonlyTuple";
+
+const decideBin = <OP extends BinOperation>(op: OP): Refinement<Binary, Binary & { operator: OP }> => {
+    return (b: Binary): b is Binary & { operator: OP } => b.operator == op
+}
 
 export const propIsAtomic: RFN.Refinement<Proposition, Atomic> = (p: Proposition): p is Atomic => {
     return typeof p === 'string'

@@ -1,7 +1,6 @@
 import * as E from "fp-ts/Either"
 import * as O from "fp-ts/Option"
 import * as Tup from "fp-ts/ReadonlyTuple"
-import * as RDRE from "fp-ts/ReaderEither"
 import * as M from "fp-ts/Map"
 import * as ROA from "fp-ts/ReadonlyArray"
 import * as S from 'fp-ts/string'
@@ -10,13 +9,17 @@ import {Monoid} from "fp-ts/Monoid";
 import {
     Atomic,
     Atomics,
-    BinOps, makeConjunction, makeDisjunction, makeEquivalence, makeImplication, makeNegation,
-    Proposition,
-    ShowProp
+    BinOps,
+    makeConjunction,
+    makeDisjunction,
+    makeEquivalence,
+    makeImplication,
+    makeNegation,
+    Proposition
 } from "../Propositions/connectives";
 import * as Refinements from "./Refinments";
 import {CompoundWFF, Input, NegatedWFF, Parser, ParserError, SingleParserError, WFF} from "./Types";
-import {BinOperation, Conjunction, Disjunction, Equivalence, Implication, Negation} from "../Propositions/Types";
+import {BinOperation} from "../Propositions/Types";
 import {Abbreviations, abbrevToDedRule, DeductionRules, deductionRules} from "../DeductionRules/rulesOfInference";
 import * as PRED from "fp-ts/Predicate";
 import {ErrorMessage} from "../validation/errorstuff";

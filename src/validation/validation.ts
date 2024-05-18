@@ -1,8 +1,12 @@
 import {
-    antecedentOf, Binary, consequentOf,
+    antecedentOf,
+    Binary,
+    consequentOf,
     getLeft,
     getNegated,
-    getRight, makeImplication, makeNegation,
+    getRight,
+    makeImplication,
+    makeNegation,
     matchesLeftOperand,
     matchesRightOperand,
     Proposition,
@@ -13,47 +17,48 @@ import {
 import * as E from "fp-ts/Either";
 import * as IOE from 'fp-ts/IOEither'
 import * as Pred from "fp-ts/Predicate"
-import * as REF from "fp-ts/Refinement"
 import * as RTUP from 'fp-ts/ReadonlyTuple'
 
 import * as M from "fp-ts/Monoid"
-import {Eq} from "fp-ts/Eq"
 import * as S from "fp-ts/string"
 import * as ROA from "fp-ts/ReadonlyArray"
 import {ErrorMessage} from "./errorstuff";
-import {flip, flow, pipe, tupled} from "fp-ts/function";
+import {flow, pipe} from "fp-ts/function";
 import * as O from "fp-ts/Option";
-import {get, oneOfEithers, persistLeft, persistRight, traverseArrayLeft, applyTup, uncurry, applyTupC} from "../utils";
+import {applyTup, applyTupC, E_sequenceArrayLeft, get, oneOfEithers} from "../utils";
 import {
     DeductionRules,
+    EquivalenceParam,
     EquivalenceParams,
-    EquivalenceRules, EquivalenceParam,
     ImplicationalRules,
-    LineReference,
     Parameters,
-    Params, ShowRule
+    Params
 } from "../DeductionRules/rulesOfInference";
 import {InferenceEvent} from "../DeductionRules/InferenceEvent/inferenceEvent";
 import {
     composedOf,
     composedOfComm,
-    propIsAtomic,
-    isBinaryCompound,
+    decompBin,
+    decompBinofBin,
     isConjunctionProp,
     isDisjunctionProp,
     isEquivalenceProp,
     isImplicationProp,
     isNegationProp,
-    propIdentity, decompBin, decompBinofBin,
+    propIdentity,
 } from "../Propositions/Refinments";
 import {
     BinaryOf,
     BinOperation,
-    Conjunction, ConjunctionOf,
-    Disjunction, DisjunctionOf,
+    Conjunction,
+    ConjunctionOf,
+    Disjunction,
+    DisjunctionOf,
     Equivalence,
-    Implication, ImplicationOf,
-    Negation, NegationOf,
+    Implication,
+    ImplicationOf,
+    Negation,
+    NegationOf,
     UnaryOperation
 } from "../Propositions/Types";
 import {EquivalenceEvent, EquivalenceEvents} from "../DeductionRules/InferenceEvent/EquivelenceInferenceEvent";
@@ -1398,7 +1403,7 @@ export const validateParameter = (p: Parameters): E.Either<ErrorMessage, ValidIn
         case "Commutation":
         case "Association":
             return pipe(p.ps,
-                traverseArrayLeft(validateEquivalenceParam(p)),
+                E_sequenceArrayLeft(validateEquivalenceParam(p)),
                 E.mapLeft(ROA.intercalate(S.Monoid)(NewLine))
             )
     }

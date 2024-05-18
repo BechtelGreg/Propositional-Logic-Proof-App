@@ -7,21 +7,20 @@ import * as ROA from "fp-ts/ReadonlyArray"
 import * as A from "fp-ts/Array"
 import * as PropParser from './Parsing/parsePropositions'
 import * as IO from "fp-ts/IO";
-import * as ROTUP from 'fp-ts/ReadonlyTuple'
 import * as PRD from 'fp-ts/Predicate'
 import {flip, flow, identity, pipe} from "fp-ts/function";
 import {Board} from "./Board/Types";
 import {append, inference, toBoard} from "./Board/Board";
 import {handleErrorMessage, printTsk} from "./IoTasks/ConsoleIO";
-import {stringToDeduction, solved} from "./Board/MappingRefinment/Refinments";
+import {solved, stringToDeduction} from "./Board/MappingRefinment/Refinments";
 import RL from "readline/promises";
-import {ShowBoard} from "./Board/Show/Show";
+import {printBoardIO, printBoardT} from "./Board/Show/Show";
 
 import {FileContents, readDirContents} from "./IoTasks/FileIO";
-import {Branded, pair, persistParam} from "./utils";
+import {Branded, TE_traverseSeqArrayLeft} from "./utils";
 
 
-const problemsDirectory = __dirname + "/Problems";
+const problemsDirectory = __dirname + "/Board/Problems";
 
 
 const toPropStrs: (s: ReadonlyArray<FileContents>) => ReadonlyArray<ReadonlyArray<string>> = ROA.map(flow(
@@ -39,9 +38,6 @@ const getBoards = pipe(
     )),
 )
 
-
-const printBoard: (b: Board) => T.Task<void>
-    = flow(ShowBoard.show, printTsk)
 
 const rl = RL.createInterface({
     input: process.stdin,
@@ -78,45 +74,51 @@ const rejected = (b: Board) => b as RejectedBoard
 type SelectedBoard = Board & Branded<Board, 'SelectedBoard'>
 const selected = (b: Board) => b as SelectedBoard
 
-const decideBoard = (b: Board): TE.TaskEither<ExitRequest, TE.TaskEither<RejectedBoard, SelectedBoard>> => {
-    const wrapSelected = flow(selected, TE.right, TE.right)
-    const wrapRejected = flow(rejected, TE.left, TE.right)
-    const getWrappedExit = flow(exitRequest, TE.left)
-    return pipe(
-        T.Do,
-        T.bind('void', () => printTsk(ShowBoard.show(b))),
-        T.bind('response', () => getBoardDecision),
-        T.let('boardSelected', ({response}) => isYes(response)),
-        T.let('boardRejected', ({response}) => isNo(response)),
-        T.let('exitRequested', ({response}) => isExit(response)),
-        TE.fromTask,
-        TE.chain(({boardSelected, boardRejected, exitRequested}) =>
-            exitRequested
-                ? getWrappedExit()
-                : boardSelected
-                    ? wrapSelected(b)
-                    : boardRejected
-                        ? wrapRejected(b)
-                        : decideBoard(b)
+const decideBoard = (b: Board): TE.TaskEither<RejectedBoard, E.Either<ExitRequest, SelectedBoard>> => {
+    const wrapSelected = flow(selected, E.right, TE.right)
+    const wrapRejected = flow(rejected, TE.left)
+    const wrapExit = flow(exitRequest, E.left, TE.right)
+    const f = (response: string): TE.TaskEither<RejectedBoard, E.Either<ExitRequest, SelectedBoard>> => {
+        return pipe(
+            T.Do,
+            T.let('boardSelected', () => isYes(response)),
+            T.let('boardRejected', () => isNo(response)),
+            T.let('exitRequested', () => isExit(response)),
+            TE.fromTask,
+            TE.chain(({boardSelected, boardRejected, exitRequested}) =>
+
+                exitRequested
+                    ? wrapExit()
+                    : boardSelected
+                        ? wrapSelected(b)
+                        : boardRejected
+                            ? wrapRejected(b)
+                            : decideBoard(b)
+            )
         )
-    );
+    };
+
+    return pipe(
+        T.of(b),
+        T.tapIO(printBoardIO),
+        T.chain(() => getBoardDecision),
+        T.chain(f)
+    )
 }
 
 type ExitRequest = 'Exit';
 const exitRequest = (): ExitRequest => 'Exit' as const
 
-const selectBoard = (boards: ReadonlyArray<Board>): TE.TaskEither<ExitRequest, SelectedBoard> => pipe(
-    boards,
-    ROA.map(decideBoard),
-    TE.sequenceSeqArray,
 
-    TE.chain(flow(
-        ROA.map(TE.swap),
-        TE.sequenceSeqArray,
-        TE.swap,
-        TE.fold(selectBoard, TE.right)
-    )),
+const selectBoard: (boards: ReadonlyArray<Board>) => TE.TaskEither<ExitRequest, SelectedBoard>
+    = flow(
+    TE_traverseSeqArrayLeft(decideBoard),
+    TE.fold(
+        rejectedBoards => selectBoard(rejectedBoards),
+        TE.fromEither
+    )
 )
+
 
 const closeAndExit = flow(printTsk, T.tapIO(IO.of(() => rl.close())))
 
@@ -138,12 +140,12 @@ const solveBoard = (b: Board): T.Task<void> => {
 
     const recursiveStep: (b: Board) => T.Task<void> = flow(
         TE.fromPredicate(solved, identity),
-        TE.fold(solveBoard, flow(printBoard, T.tapIO(IO.of(() => rl.close()))))
+        TE.fold(solveBoard, flow(printBoardT, T.tapIO(IO.of(() => rl.close()))))
     )
 
 
     return pipe(b,
-        printBoard,
+        printBoardT,
         T.chain(() => () => rl.question("Enter inferences as `Proposition`, `Rule` n_0, n_1 ... n_k: ")),
         T.chain(handleExit(flow(
             handleDeduction,

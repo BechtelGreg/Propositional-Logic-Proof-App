@@ -1,10 +1,10 @@
 import * as P from './parsePropositions'
+import {flatmap, makeInput} from './parsePropositions'
 import * as E from 'fp-ts/Either'
 import * as ROA from 'fp-ts/ReadonlyArray'
-import {Input, ParserError, SingleParserError} from "./Types";
+import {Input, ParserError} from "./Types";
 import {isSingleParserError} from "./Refinments";
 import {pipe} from "fp-ts/function";
-import {flatmap, makeInput} from "./parsePropositions";
 
 function compareParserError(p1: ParserError, p2: ParserError): boolean {
     const single1 = isSingleParserError(p1)

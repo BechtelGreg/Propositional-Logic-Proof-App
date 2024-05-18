@@ -2,9 +2,11 @@ import {
     Conjunction,
     ConjunctionOf,
     Disjunction,
-    DisjunctionOf, Equivalence,
-    EquivalenceOf, Implication,
-    ImplicationOf, Negation,
+    DisjunctionOf,
+    Equivalence,
+    Implication,
+    ImplicationOf,
+    Negation,
     NegationOf
 } from "../../Propositions/Types";
 import {Proposition} from "../../Propositions/connectives";

@@ -1,10 +1,9 @@
 import * as Random from "fp-ts/Random";
 import * as IO from "fp-ts/IO"
 import * as RONEA from "fp-ts/ReadonlyNonEmptyArray";
-import {reduce} from "fp-ts/Foldable";
 import * as STR from "fp-ts/string"
 import * as ARR from "fp-ts/Array";
-import {pipe, flow, untupled, flip} from "fp-ts/function";
+import {flow, untupled} from "fp-ts/function";
 
 type IO<T> = IO.IO<T>
 type ReadonlyNonEmptyArray<T> = RONEA.ReadonlyNonEmptyArray<T>

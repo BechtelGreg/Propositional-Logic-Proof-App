@@ -2,6 +2,7 @@ import {flow, pipe} from "fp-ts/function";
 import * as ROA from 'fp-ts/ReadonlyArray'
 import * as E from 'fp-ts/Either'
 import * as TUP from 'fp-ts/ReadonlyTuple'
+import * as ROTUP from 'fp-ts/ReadonlyTuple'
 import * as O from 'fp-ts/Option'
 import {Parameters, Params} from "../DeductionRules/rulesOfInference";
 import {Proposition, ShowProp} from "../Propositions/connectives";
@@ -12,7 +13,6 @@ import {checkNonEmptyArray, isSingleton, isTriple, isTwople} from "./MappingRefi
 import * as PRef from "../Propositions/Refinments";
 import {ParserError} from "../Parsing/Types";
 import * as RNEA from "fp-ts/ReadonlyNonEmptyArray";
-import * as ROTUP from "fp-ts/ReadonlyTuple";
 
 export type EmptyArrayMessage = ReturnType<typeof emptyArrayMessage>
 

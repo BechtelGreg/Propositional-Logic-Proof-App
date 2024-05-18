@@ -1,10 +1,8 @@
 import * as TE from "fp-ts/TaskEither";
-import * as T from "fp-ts/Task";
 import * as ROA from 'fp-ts/ReadonlyArray'
 import {flow, pipe} from "fp-ts/function";
 import fs from "fs/promises";
 import * as E from "fp-ts/Either";
-import {ProofLine} from "../Board/Types";
 import {Branded} from "../utils";
 
 export type FileName = Branded<string, 'FileName'>

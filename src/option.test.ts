@@ -1,26 +1,22 @@
-import {pipe, flow, LazyArg} from 'fp-ts/function'
+import {flow, LazyArg, pipe} from 'fp-ts/function'
 import * as O from 'fp-ts/Option'
 import * as E from 'fp-ts/Either'
 import * as IO from "fp-ts/IO"
 import * as P from "fp-ts/Predicate"
-import * as RONEA from "fp-ts/ReadonlyNonEmptyArray";
 import * as N from 'fp-ts/number'
 import * as Str from 'fp-ts/string'
+import {
+    getRandomBoolean,
+    getRandomChoiceIO,
+    getRandomInt,
+    getRandomObject,
+    getRandomString,
+    PrimitiveType
+} from "./TestUtils";
+import {Refinement} from "fp-ts/Refinement";
 
 
 type IO<T> = IO.IO<T>
-
-import {
-    getIntWithinHundredOfZero,
-    getRandomString,
-    getRandomChoice,
-    getRandomChoiceIO,
-    PrimitiveType,
-    getRandomObject, getRandomInt, getRandomBoolean, getRandomArray
-} from "./TestUtils";
-import {ReadonlyNonEmptyArray} from "fp-ts/ReadonlyNonEmptyArray";
-import {Refinement} from "fp-ts/Refinement";
-import {number} from "fp-ts";
 
 describe("Option", () => {
 

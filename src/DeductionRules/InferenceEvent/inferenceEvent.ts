@@ -1,7 +1,7 @@
 import {BrandRule, CitesJustification, DeductionRules} from "../rulesOfInference";
 import {Proposition} from "../../Propositions/connectives";
-import {Conjunction, ConjunctionOf, Disjunction, DisjunctionOf, Implication, Negation} from "../../Propositions/Types";
-import {DisjunctiveAssociationEvent, EquivalenceEvents} from "./EquivelenceInferenceEvent";
+import {Conjunction, Disjunction, Implication, Negation} from "../../Propositions/Types";
+import {EquivalenceEvents} from "./EquivelenceInferenceEvent";
 
 export type InferenceEvent<Rule extends DeductionRules>
     = Extract<InferenceEvents, BrandRule<Rule>>

@@ -1,4 +1,4 @@
-import {Atomic, Compound, Proposition, ShowProp} from "../Propositions/connectives";
+import {Proposition, ShowProp} from "../Propositions/connectives";
 import {Index} from "../Board/Types";
 import {Show} from "fp-ts/Show";
 import * as R from 'fp-ts/Record'

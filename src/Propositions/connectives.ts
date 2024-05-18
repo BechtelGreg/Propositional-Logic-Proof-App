@@ -3,7 +3,7 @@ import * as RONEA from "fp-ts/ReadonlyNonEmptyArray"
 
 import {flow} from "fp-ts/function";
 import {Show} from "fp-ts/Show";
-import {propIsAtomic, propIsBinaryCompound, propIsUnaryCompound, propIdentity} from "./Refinments";
+import {propIdentity, propIsAtomic, propIsBinaryCompound, propIsUnaryCompound} from "./Refinments";
 import {
     BinOperation,
     Conjunction,

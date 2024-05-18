@@ -1,4 +1,4 @@
-import {Board, Deductions, Index, makeDeductionBy} from "../Types";
+import {Board, Deductions, Index} from "../Types";
 import {propIdentity} from "../../Propositions/Refinments";
 import {flow, identity, pipe} from "fp-ts/function";
 import * as E from 'fp-ts/Either'
@@ -8,8 +8,7 @@ import * as REF from "fp-ts/Refinement";
 import * as ROA from "fp-ts/ReadonlyArray";
 import {ErrorMessage} from "../../validation/errorstuff";
 import {Proposition} from "../../Propositions/connectives";
-import * as PRED from "fp-ts/Predicate";
-import {deductionRules, DeductionRules, equivalenceRules, implRules} from "../../DeductionRules/rulesOfInference";
+import {deductionRules, DeductionRules} from "../../DeductionRules/rulesOfInference";
 import {isDeductionRule} from "../../DeductionRules/Refinements";
 import * as TE from "fp-ts/TaskEither";
 import * as Parser from "../../Parsing/parsePropositions";

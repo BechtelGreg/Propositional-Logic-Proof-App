@@ -1,14 +1,4 @@
-import {
-    Atomic,
-    Binary,
-    BinOps,
-    makeConjunction,
-    makeDisjunction,
-    makeEquivalence,
-    makeImplication,
-    makeNegation,
-    Unary
-} from "./connectives";
+import {Atomic, Binary, BinOps, Unary} from "./connectives";
 
 export type BinOperation = (typeof BinOps)[number]
 export type UnaryOperation = '~'

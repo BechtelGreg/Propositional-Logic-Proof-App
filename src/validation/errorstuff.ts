@@ -1,6 +1,4 @@
-import {ImplicationalRules, Parameters, Params, showParams} from "../DeductionRules/rulesOfInference";
-import {NaturalTransformation} from "fp-ts/NaturalTransformation";
-import {Proposition} from "../Propositions/connectives";
+import {ImplicationalRules} from "../DeductionRules/rulesOfInference";
 
 export type ErrorMessage = string
 

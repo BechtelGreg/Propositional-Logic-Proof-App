@@ -7,7 +7,9 @@ import {Board, Justifications, ProofLine, ProofLineFormater} from "../Types";
 import {max} from "fp-ts/Ord";
 import * as NUM from "fp-ts/number";
 import * as TUP from "fp-ts/ReadonlyTuple";
-import {NewLine} from "../../IoTasks/ConsoleIO";
+import {NewLine, print, printTsk} from "../../IoTasks/ConsoleIO";
+import * as T from "fp-ts/Task";
+import * as IO from "fp-ts/IO";
 
 const JustificationOffset = 25
 export const ShowProofLine: Show<ProofLine> & ProofLineFormater = {
@@ -25,7 +27,7 @@ export const ShowProofLine: Show<ProofLine> & ProofLineFormater = {
 const ShowJustification: Show<Justifications | 'Premise'> = {
     show: j => typeof j == 'string'
         ? j
-        : `${j._rule}(${pipe(j.lines, ROA.map(n => `${n}`), ROA.intercalate(S.Monoid)(', '))})`
+        : `${j._rule}(${pipe(j.lines, ROA.sort(NUM.Ord), ROA.map(n => `${n}`), ROA.intercalate(S.Monoid)(', '))})`
 }
 
 
@@ -49,3 +51,8 @@ ${dshs}
 ${lines}`
     )
 }
+
+export const printBoardT: (b: Board) => T.Task<void>
+    = flow(ShowBoard.show, printTsk)
+export const printBoardIO: (b: Board) => IO.IO<void>
+    = flow(ShowBoard.show, print);
